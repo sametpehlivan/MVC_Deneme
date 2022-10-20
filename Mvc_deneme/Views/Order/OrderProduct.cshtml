@@ -1,0 +1,79 @@
+﻿@model Order
+@section Scripts{
+    <script>
+         $(document).ready(function(e){
+            $(".btn").click(function(e){
+                console.log($(this).parents(".card").children(".hidden").css("display"));
+                if($(this).parents(".card").children(".hidden").css("display") == "none"){
+                  
+                   $(this).children(".fa-angle-down").removeClass("fa-angle-down").addClass("fa-angle-up");
+                   $(this).parents(".card").children(".hidden").css("display","inline-block");
+                    
+                }
+                else{
+                    $(this).children(".fa-angle-up").removeClass("fa-angle-up").addClass("fa-angle-down");
+                    $(this).parents(".card").children(".hidden").css("display","none");
+                }
+            });
+         });
+    </script>
+}
+@section Style{
+    <style>
+        .fa-angle-down{
+            color:#007E33 !important;
+        }
+       button:hover>i{
+           color:white !important;
+       }
+
+    </style>
+}
+@foreach (var item in Model.OrderProduct) 
+{
+    <div class="card bg-light mb-3  mx-auto border-0 rounded-0 col-md-10" style="border-left:solid;border-width:3px;border-color:green;" >
+    
+        <div class="card-body">
+            <div class="d-flex flex-column">
+                <div class="d-flex justify-content-around">
+                    <div >
+                        <img width=75 class="rounded" src="~/lib/img/product/@(item.Product.ImageUrl.ToString() + ".jpg")"  />
+                    </div>
+                    <div> 
+                        @item.ProductName
+                    </div>
+                    <div>
+                        @item.ProductPrice
+                    </div>
+                    <div>
+                        (@item.Quantity) Adet
+                    </div>                   
+                    <div>
+                        <button type="button"  class="btn btn-outline-success rounded-circle m-1 down">
+                            <i class="fa-solid fa-angle-down"  ></i>
+                        </button>
+                    </div>
+                </div>     
+            </div>
+        </div>
+        <div class="card-body hidden"  style="display:none">
+            <div class="d-flex justify-content-around"  >
+                <div class="d-flex flex-column mx-2">
+                    <p>
+                        @Model.FirstName @Model.LastName
+                    </p>  
+                </div>    
+                <div class="d-flex flex-column mx-2">
+                    <p>
+                        @Model.Email
+                    </p>
+                </div>
+                <div class="d-flex flex-column mx-2">
+                    <p>
+                        @Model.AddressDescription
+                    </p>
+                </div>
+            </div>
+         </div>
+    </div>
+ }

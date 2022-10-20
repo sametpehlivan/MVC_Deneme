@@ -1,0 +1,23 @@
+﻿@model List<Mvc_deneme.Models.CategoryModel>
+
+<div class="category row mt-1">
+    <div class="col">        
+            <ul class="list-group rounded-0">
+                @foreach(var category in Model  )
+                {
+                    @if (ViewBag.selectedCategory == category.Url)
+                    {
+                        <li class="list-group-item bg-primary" >
+                            <a class="text-white" style="text-decoration:none;"  href="/product/@category.Url">@category.Name</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="list-group-item category-item">
+                            <a class="text-dark"  href="/product/@category.Url">@category.Name</a>
+                        </li>
+                    }
+            } 
+            </ul>
+    </div>
+</div>

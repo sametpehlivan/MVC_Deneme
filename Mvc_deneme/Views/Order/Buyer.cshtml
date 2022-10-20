@@ -1,0 +1,270 @@
+﻿@model BuyerViewModel
+@section Scripts{
+    <script>
+        
+        $(document).ready(function(e){
+            $("#back").click(function(e){
+                 $("#formInfo").css("display","block");
+                $("#cartInfo").css("display","none");
+            });
+            $("#goCart").click(function(e){    
+                let temp = false;
+               
+                if( $("#Buyer_FirstName").val() == ''  ) temp = true;
+                if( $("#Buyer_LastName").val() == '') temp = true;
+                if( $("#Buyer_AddressDescription").val() == '' ) temp = true;
+                if( $("#Buyer_Phone").val() == '' ) temp = true;
+                if( $("#Buyer_City").val() == '' ) temp = true;
+                if( $("#Buyer_Town").val() == '' ) temp = true;
+                if( $("#Buyer_ZipCode").val() == '' ) temp = true;
+                if(temp){
+                    $("#error").text("Lütfen Tüm Alanları doldurunuz");
+                }
+                else{
+                   $("#error").text("");
+                   
+                   $("#formInfo").css("display","none");
+                   $("#cartInfo").css("display","block");
+                }
+             });
+
+        });
+        
+    </script>
+    <script>
+        
+     
+        let comboCity = document.querySelector("#Buyer_City");
+        let comboTown = document.querySelector("#Buyer_Town");
+        
+         var option = document.createElement("option");
+         option.text="Seçiniz";
+         option.value="";
+         option.disabled=true;
+         option.selected=true;
+         comboTown.add(option);
+
+        getCity();
+        
+        comboCity.addEventListener("change",function(e){
+            var cityId = comboCity.value;
+            
+            getTown(cityId);
+           
+        });
+        
+        comboTown.addEventListener("change",function(e){
+            var townId = comboTown.value;
+            getStreet(townId);
+        });
+        
+        function getCity()
+        {
+            let path = "https://localhost:44316/il.json";
+            
+            var option = document.createElement("option");
+            option.text="Seçiniz";
+            option.value="";
+            option.disabled=true;
+            option.selected=true;
+            comboCity.add(option);
+            
+
+            fetch(path)
+            .then(result => result.json())
+            .then((result) =>
+            {  
+                result = result.sort(function(a, b){
+                        let x = parseInt(a.id);
+                        let y = parseInt(b.id);
+                        if (x < y) {return -1;}
+                        if (x > y) {return 1;}
+                        return 0;
+                    });
+                for(var i = 0; i < result.length; i++ )
+                {
+                    var option = document.createElement("option");
+                    option.text = result[i].name;
+                    option.value = result[i].id;
+                    comboCity.add(option);
+                }
+               
+            } ).catch(e=>{console.log(e);});
+        }
+        function getTown(cityId)
+        {
+            while(comboTown.options.length>0)
+            {
+                comboTown.remove(0);
+            }
+            let path = "https://localhost:44316/ilce.json";
+            
+            var option = document.createElement("option");  
+            option.text="Seçiniz";
+            option.value="";
+            option.disabled=true;
+            option.selected=true;
+                
+            comboTown.add(option);
+
+            fetch(path)
+            .then(result => result.json())
+            .then((result) =>
+            {
+                result = result.sort(function (a,b) {
+                        a.name - b.name;
+                    });
+                for(var i = 0; i < result.length; i++ )
+                {
+                    if(cityId == result[i].il_id)
+                    {
+                        var option = document.createElement("option");
+                        option.text = result[i].name;
+                        option.value = result[i].id;
+                        
+                        comboTown.add(option);
+                    }
+                    
+                }
+            } )
+            .catch( e => { console.log( e ) } );
+        } 
+       
+    </script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+}
+@section Style{
+    <style>
+        .card-header{
+            background-color:#d64161;
+        }
+        .container{
+             box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        }
+    </style>
+}
+ 
+<div class="container col-md-12 " >
+    <div class="card-header  text-white text-uppercase">  
+        <h4>Satın Alma</h4>  
+    </div>   
+    <form  asp-controller="Order" asp-action="Buyer" enctype="multipart/form-data">
+        <div class= "col-md-8 m-2 mx-auto" id="formInfo">
+            <span class="text-danger" id="error"></span>
+            <!-- fullName input -->
+            <div class="d-flex justify-content-around">
+                <div class="col-md-6 form-outline mb-4">
+                <label class="form-label" asp-for=@Model.Buyer.FirstName></label>
+                <input type="text" asp-for=@Model.Buyer.FirstName class="form-control form-control-sm"/>
+                <span asp-validation-for=@Model.Buyer.FirstName class="text-danger"></span>  
+                </div>
+                <div class="col-md-6 form-outline mb-4">
+                <label class="form-label" asp-for=@Model.Buyer.LastName></label>
+                <input type="text" asp-for=@Model.Buyer.LastName class="form-control form-control-sm"/>
+                <span asp-validation-for=@Model.Buyer.LastName class="text-danger"></span>  
+                </div>
+            </div>
+          
+            <!-- Email input -->
+            <div class="d-flex justify-content-around">
+                <div class="col-md-6 form-outline mb-4">
+                <label class="form-label" asp-for=@Model.Buyer.Email></label>
+                <input type="email" asp-for=@Model.Buyer.Email class="form-control form-control-sm"/>
+                <span asp-validation-for=@Model.Buyer.Email class="text-danger"></span>  
+                </div>
+                <!-- Phone input -->
+                <div class="col-md-6 form-outline mb-4">
+                <label class="form-label" asp-for=@Model.Buyer.Phone></label>
+                <input type="tel" asp-for=@Model.Buyer.Phone class="form-control form-control-sm"/>
+                <span asp-validation-for=@Model.Buyer.Phone class="text-danger"></span>  
+                </div>
+            </div>
+            <!--  address desc. input -->
+            <div class="d-flex justify-content-around mb-4">
+                <div class="col-md-12">
+                    <label class="form-label" asp-for=@Model.Buyer.AddressDescription></label>
+                    <textarea  asp-for=@Model.Buyer.AddressDescription  class="form-control form-control-sm"></textarea>
+                    <span asp-validation-for=@Model.Buyer.AddressDescription class="text-danger"></span>  
+                </div>
+            </div>
+              
+            <div class="d-flex justify-content-around mb-4">
+                <div class="col-md-4 form-outline mb-4">
+                    <p>Şehir:</p> 
+                    <select asp-for=@Model.Buyer.City></select>
+                    <span asp-validation-for=@Model.Buyer.City class="text-danger"></span>
+
+                </div>
+                <div class="col-md-4 form-outline mb-4">
+                    <p>İlçe:</p> 
+                    <select asp-for=@Model.Buyer.Town ></select>
+                        <span asp-validation-for=@Model.Buyer.Town class="text-danger"></span>
+                </div>
+                <div class="col-md-4 form-outline mb-4">
+                    <p>Posta Kodu:</p> 
+                    <input asp-for=@Model.Buyer.ZipCode /> 
+                    <span asp-validation-for=@Model.Buyer.ZipCode class="text-danger"></span>
+                </div>
+        </div>
+        <div class="col-md-12 m-2 mx-auto" >
+                <div class="text-center text-lg-start mt-4 pt-2">
+                <button type="button" id="goCart"   class="btn btn-primary rounded-0"
+                style="padding-left: 2.5rem; padding-right: 2.5rem;">Devam Et</button>
+                </div>
+        </div>
+        </div>
+         
+        <div class="col-md-8 m-2 mx-auto" style="display:none;" id="cartInfo">
+            <div class="d-flex justify-content-around">
+                <div class="col-md-12">
+                    <label class="form-label" asp-for=@Model.Cart.CartNumber></label>
+                    <input  asp-for=@Model.Cart.CartNumber  class="form-control form-control-sm"/>
+                    <span asp-validation-for=@Model.Cart.CartNumber class="text-danger"></span>  
+                </div>
+            </div>
+            <div class="d-flex justify-content-around">
+                <div class="col-md-6 form-outline mb-4">
+                <label class="form-label" asp-for=@Model.Cart.CartFirstName></label>
+                <input type="text" asp-for=@Model.Cart.CartFirstName class="form-control form-control-sm"/>
+                <span asp-validation-for=@Model.Cart.CartFirstName class="text-danger"></span>  
+                </div>
+                <div class="col-md-6 form-outline mb-4">
+                <label class="form-label" asp-for=@Model.Cart.CartLastName></label>
+                <input type="text" asp-for=@Model.Cart.CartLastName class="form-control form-control-sm"/>
+                <span asp-validation-for=@Model.Cart.CartLastName class="text-danger"></span>  
+                </div>
+            </div>
+            <div class="d-flex justify-content-around">
+                    <div class="col-md-4">
+                        <label class="form-label" asp-for=@Model.Cart.ExpireMonth></label>
+                        <input  asp-for=@Model.Cart.ExpireMonth  class="form-control form-control-sm"/>
+                        <span asp-validation-for=@Model.Cart.ExpireMonth class="text-danger"></span>  
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" asp-for=@Model.Cart.ExpireYear></label>
+                        <input  asp-for=@Model.Cart.ExpireYear  class="form-control form-control-sm"/>
+                        <span asp-validation-for=@Model.Cart.ExpireYear class="text-danger"></span>  
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" asp-for=@Model.Cart.cvc></label>
+                        <input  asp-for=@Model.Cart.cvc  class="form-control form-control-sm"/>
+                        <span asp-validation-for=@Model.Cart.cvc class="text-danger"></span>  
+                    </div>
+                      
+            </div>
+              
+            <div class="text-center text-lg-start mt-4 pt-2">
+            <button class="btn btn-success rounded-0"
+            style="padding-left: 2.5rem; padding-right: 2.5rem;" id="back">Geri</button>
+            <button  type="submit" class="btn btn-primary rounded-0"
+            style="padding-left: 2.5rem; padding-right: 2.5rem;">Devam Et</button>
+            </div>
+        </div>
+          
+    </form>
+    
+    
+</div>
+

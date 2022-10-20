@@ -1,0 +1,93 @@
+﻿@model ProductModel
+@section Scripts
+{   
+    <script src="~/ckeditor/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace('editor');
+    
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+}
+
+<div class="col-md-12 card">  
+    <div class="card-header bg-dark text-white text-uppercase">  
+        <h4>Ürün Oluşturma Sayfası</h4>  
+    </div>  
+    <div class="card-body ">  
+        <form asp-controller="Admin" asp-action="CreateProduct" enctype="multipart/form-data">  
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row">  
+                    <div class="col-md-6">  
+                        <div class="form-group">  
+                            <label asp-for="Name" class="lable-control"></label>  
+                            <input asp-for="Name" class="form-control" />  
+                            <span asp-validation-for="Name" class="text-danger"></span>  
+                        </div>  
+                    </div>      
+                </div>  
+                <div class="row">  
+                    <div class="col-md-6">  
+                        <div class="form-group">  
+                            <label asp-for="Price" class="lable-control"></label>  
+                            <input asp-for="Price" class="form-control" />  
+                            <span asp-validation-for="Price" class="text-danger"></span>  
+                        </div>  
+                    </div>
+                </div>
+                 <div class="row">  
+                    <div class="col-md-6">  
+                        <div class="form-group">  
+                            <label asp-for="Quantity" class="lable-control"></label>  
+                            <input asp-for="Quantity" class="form-control" />  
+                            <span asp-validation-for="Quantity" class="text-danger"></span>  
+                        </div>  
+                    </div>
+                </div>
+                <div class="row">  
+                    <div class="col-md-6">  
+                        <div class="form-group">  
+                            <label asp-for="Description" class="lable-control"></label>  
+                            <textarea asp-for="Description" itemid="editor" class="form-control"></textarea>  
+                            <span asp-validation-for="Description" class="text-danger"></span>  
+                        </div>  
+                    </div>      
+                </div>
+                <div class="row">  
+                    <div class="col-md-6">  
+                        <div class="form-group">  
+                            <input type="hidden" asp-for="ImageUrl"/>
+                            <input  type="file" id="file" name="file" />      
+                        </div>  
+                    </div>      
+                </div>
+            </div>
+            <div class="col-md-4">
+                @{
+                    int count = Model.SelectedCategory == null ? 0 : Model.SelectedCategory.Count;
+                }
+                @for(int i = 0; i <count ; i++)
+                {
+                    <input type="hidden"  name="SelectedCategories[@i].Id" value="@Model.SelectedCategory[@i].Id">
+                    <input type="hidden"  name="SelectedCategories[@i].Name" value="@Model.SelectedCategory[@i].Name">
+                }
+                @foreach (var item in (List<Category>)ViewBag.Categories)
+                {
+                    <div class="form-check">
+                      <input class="form-check-input" name="categoriesId" type="checkbox" value="@item.Id" id="category_@(item.Id)" 
+                         @(Model.SelectedCategory == null ? "" :(Model.SelectedCategory.Any(i=>i.Id == item.Id)? "checked":""))>
+                      <label class="form-check-label" for="category_@(item.Id)">
+                         @item.Name
+                      </label>
+                    </div>
+                }            
+            </div>
+        </div>
+        <div class="form-group">  
+            <button type="submit" class="btn btn-primary rounded-0">Kaydet</button>
+            <button type="button" class="btn btn-danger rounded-0" href="/admin/product">İptal</button> 
+        </div>
+        </form>  
+    </div>  
+</div>  

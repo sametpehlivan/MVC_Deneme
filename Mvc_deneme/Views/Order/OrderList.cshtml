@@ -1,0 +1,39 @@
+﻿@model List<Order>
+
+@if (Model.Count > 0)
+{
+    @foreach(var item in Model)
+    {
+    <div class="card bg-light mb-3 mx-auto border-0  rounded-0 col-md-10" style="border-left:solid;border-width:3px;border-color:green;" >
+    
+        <div class="card-body ">
+            <div class="d-flex justify-content-around">
+                <div> 
+                    <p>@item.ConversationId</p>
+                    <p>@item.DateTime</p>
+                    <p>@(item.FirstName + " " +  item.LastName)</p>
+                </div>
+                <div>
+                    @foreach (var op in item.OrderProduct)
+                    {
+                        <div class="d-flex flex-wrap">
+                            <img width=50 class="rounded" src="~/lib/img/product/@(op.Product.ImageUrl.ToString() + ".jpg")"  />
+                        </div>
+                    }
+                </div>
+                <div>  
+                    <a class="btn btn-outline-success" href=@Url.Action("OrderProduct","Order",new {orderId=@item.Id})>İncele</a>
+                </div>
+                <div class="d-flex justify-content-around">  
+                    <p>Sipariş Durumu : @item.OrderState </p>
+                </div>
+            </div>   
+        </div>
+    </div>
+    }
+}
+else{
+    <div class="col-md-12">
+        <partial name="_error"/>
+    </div>
+}

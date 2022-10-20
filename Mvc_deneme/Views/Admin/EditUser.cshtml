@@ -1,0 +1,57 @@
+﻿@model UserModel
+
+<div class="col-md-12 card m-3">  
+    <div class="card-header bg-dark text-white text-uppercase">  
+        <h3 class="m-2"> Kullanıcı Yönetimi Sayfası  </h3>  
+       <h5> Kullanıcı Adı : </h5>  <span class="h-6">@Model.UserName</span>
+    </div>  
+
+    <div class="card-body m-2">  
+        <form method="post" asp-controller="Admin" asp-action="EditUser" enctype="multipart/form-data">  
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row">
+                    <input type="hidden"  asp-for=@Model.UserId />
+                    <input type="hidden"  asp-for=@Model.UserName />
+                    <div class="col-md-12">  
+
+                        <div class="form-group col-6">  
+                            <label asp-for=@Model.FirstName class="lable-control"></label>  
+                            <input asp-for=@Model.FirstName class="form-control" />  
+                            <span asp-validation-for=@Model.FirstName class="text-danger"></span>  
+                        </div>  
+                        <div class="form-group col-6">  
+                            <label asp-for=@Model.LastName class="lable-control"></label>  
+                            <input asp-for=@Model.LastName class="form-control" />  
+                            <span asp-validation-for=@Model.LastName class="text-danger"></span>  
+                        </div>
+                    </div>      
+                </div>  
+            </div>
+            <div class="col-md-4">
+                @for(var index=0;index<@Model.HasRole.Count;index++)
+                {
+                    <div class="form-check">
+                         <input type="hidden"  asp-for=@Model.HasRole[index].RoleName />
+                         <input type="hidden"  asp-for=@Model.HasRole[index].RoleId />
+                        <label class="form-check-label" >
+                              @Model.HasRole[index].RoleName   
+                        </label>    
+                        <input class="form-check-input" asp-for=@Model.HasRole[index].hasRole>   
+                    </div>                   
+                }
+
+            </div>
+        </div>
+        <div class="form-group">  
+            <button type="submit" class="btn btn-primary rounded-0">Kaydet</button> 
+             <button type="button" class="btn btn-danger rounded-0" href="/admin/user">İptal</button> 
+        </div>
+        </form>  
+    </div>  
+</div> 
+@section Scripts{
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+}

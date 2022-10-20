@@ -1,0 +1,132 @@
+﻿@model CartViewModel 
+
+
+@if (Model.CartItems.Count <=0)
+{
+    <div class="col-md-12">
+         <partial name="_error" />
+    </div>
+   
+}
+else
+{
+    <div class="container m-2">
+        <div class ="d-flex justify-content-around"> 
+           
+            <div class="col-md-6 col-sm-12">
+   
+                @foreach(var item in Model.CartItems)
+                {
+                    <div class="card  m-2">
+                       
+                      <div class="card-body">
+                           <div class="row" >
+                               <div class="col-md-4"> 
+                                   <table>
+                                       <tbody class="table table-borderless">
+                                        <tr>
+                                            <td class="col-md-2">
+                                                <img src="~/lib/img/product/@(item.Product.ImageUrl.ToString() + ".jpg")" width=80 />
+                                            </td>
+                                           <td>@item.Product.Name</td>
+                                           <td>@(item.Product.Price) ₺</td>
+                                             <td class="col-md-2"> 
+                                                 <span class="text-danger"></span>
+                                                <div class="btn-group-vertical " id="quantity+@(Model.Id.ToString())">
+                                                    @{
+                                                      int _max = (item.Product.StockQuantity < 10 ? item.Product.StockQuantity:10);
+                                                    }
+
+                                                    @if(item.Quantity < _max){
+                                                        <a class="btn btn-sm btn-group-item quantity-plus m-0" href=@Url.Action("AddCart", "Cart", new { quantity=1,ProductId=@item.Product.Id  })>
+                                                          <span ><i class="fa fa-angle-up"  ></i></span>
+                                                            </a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a class="btn btn-sm btn-group-item quantity-plus m-0 disabled")>
+                                                                <span ><i class="fa fa-angle-up"  ></i></span>
+                                                            </a>
+                                                        }
+                                                        <input class="mx-auto form-control form-control-sm input-number  m-0 "  type="text"  name="quantity"  style="width: 2.5rem" 
+                                                        value="@item.Quantity") readonly>
+                                                    @if(item.Quantity > 1)
+                                                    {
+                                                        <a class="btn btn-sm btn-group-item quantity-minus m-0"  href=@Url.Action("AddCart", "Cart", new { quantity=-1,ProductId=@item.Product.Id  })> 
+                                                            <span ><i class="fa fa-angle-down"></i></span>
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a class="btn btn-sm btn-group-item quantity-minus m-0 disabled")> 
+                                                            <span ><i class="fa fa-angle-down"></i></span>
+                                                        </a>
+                                                     }
+                                                </div>
+                                            </td>
+                                            <td>                                             
+                                                <a class= "btn btn-sm btn-danger" href=@Url.Action("DeleteCartItem", "Cart", new { Id=@item.Id  }) > 
+                                                    <i class="fa-solid fa-circle-minus " ></i> Seppeti Temizle
+                                                </a>                                              
+                                            </td>
+                                         </tr>
+                                        </tbody>
+                                   </table>
+                               </div>
+                           </div>
+                           
+                       </div>
+                    </div>
+                }
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <div class="row">
+                    <div class="col-md-12 ">
+                        <div class="card bg-light mb-3" >
+                          <div class="card-header">Sepetteki Ürünler</div>
+                          <div class="card-body">
+                            @foreach(var item in Model.CartItems)
+                            {
+                                  <p class="card-text">@item.Product.Name <span class="text-muted">(@item.Quantity) (@(item.Quantity * item.Product.Price) ₺)</span> </p>  
+                            }
+                                <div class="d-flex flex-row">
+                                    @foreach (var item in Model.CartItems)
+                                    {
+                                        <div class="m-2">
+                                            <img width=50 class="rounded" src="~/lib/img/product/@(item.Product.ImageUrl.ToString() + ".jpg")"  />
+                                        </div>
+                                    }
+                                </div>   
+                            </div>
+                            <div class="card-footer">
+                                Total Price : @(Model.TotalPrice()) ₺ 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="d-flex justify-content-around">
+                             <div>
+                                <a class= "btn btn-sm btn-danger" href=@Url.Action("DeleteCart", "Cart",new {Id= Model.Id})> 
+                                    <i class="fa-solid fa-circle-minus " ></i> Seppeti Temizle
+                                </a>
+                             </div>
+                             <div>
+                                <a class= "btn btn-sm btn-primary mx-1" href="/products"> 
+                                    <i class="fa-solid fa-circle-arrow-left"></i> Alışverişe Devam Et
+                                </a>
+                             </div>
+                             <div>
+                                <a class= "btn btn-sm btn-success " href=@Url.Action("Buyer","Order")> 
+                                    <i class="fa-solid fa-circle-arrow-right"></i> Ödemeye Git
+                                </a>
+                             </div>               
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+
+</div>
+}

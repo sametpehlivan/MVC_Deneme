@@ -1,0 +1,31 @@
+﻿@model EditUserViewModel
+@section Scripts{
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+}
+
+<div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1 m-2">
+  
+    <form method="post" asp-action="EditUser">
+          <div class="form-outline mb-3">
+            <label class="form-label" asp-for="FirstName"></label>
+            <input type="text" asp-for="FirstName" class="form-control form-control-lg" />
+            <span asp-validation-for="FirstName" class="text-danger"></span>  
+        </div>
+  
+        <div class="form-outline mb-3">
+            <label class="form-label" asp-for="LastName"></label>
+            <input type="text" asp-for="LastName" class="form-control form-control-lg" />
+            <span asp-validation-for="LastName" class="text-danger"></span>  
+        </div>
+            
+        <div class="form-outline mb-3">
+            <label class="form-label" asp-for=PhoneNumber></label>
+            <input type="tel" asp-for="PhoneNumber" class="form-control form-control-lg"/>
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>  
+        </div>
+          <button  type="submit" class="btn btn-primary btn-lg"
+        style="padding-left: 2.5rem; padding-right: 2.5rem;">Onayla</button>
+    </form>
+</div>

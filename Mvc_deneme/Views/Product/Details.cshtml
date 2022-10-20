@@ -1,0 +1,136 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<Mvc_deneme.Identity.User> SignInManager
+@model Product
+@section Scripts{
+<script>
+    $(document).ready(function () {
+        
+        function isDisabledPlus(){
+           
+             if(parseInt($("#quantity").val()) >= parseInt($("#quantity").attr('max').valueOf())){
+                $('.quantity-right-plus').attr("disabled", "true");
+
+            }else{
+                $('.quantity-right-plus').removeAttr("disabled");
+            }
+        }
+        function isDisabledMinus(){
+     
+            if(parseInt($("#quantity").val()) == 1){
+                $('.quantity-left-minus').attr("disabled", "true");
+            }else{
+                $('.quantity-left-minus').removeAttr("disabled");
+            }
+        }
+        isDisabledPlus();
+        isDisabledMinus();
+        $('.quantity-left-minus').click((e)=>{
+            var val = parseInt($("#quantity").val());
+            $("#quantity").val(val-1);
+            isDisabledPlus();
+            isDisabledMinus();
+            
+        });
+        $('.quantity-right-plus').click((e)=>{
+            var val = parseInt($("#quantity").val());
+            $("#quantity").val(val+1);
+            isDisabledPlus();
+            isDisabledMinus();
+           
+        });
+    
+        console.log($("#quantity").val());
+    });
+</script>
+}
+@section Style{
+    <style>
+     .card-check {
+           box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+       }
+       input[type='number'] {
+            -moz-appearance:textfield;
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+        }
+    </style>
+}
+<div class="container m-0 p-0">
+    <div class="row">
+        <div class="col-md-7 d-flex justify-content-center" >
+             <div style="width:20rem"  class="mx-2">
+                <div  style="height:20rem;">
+                    <img src="~/lib/img/product/@(Model.ImageUrl.ToString() + ".jpg")" class="card-img-top"  />
+                </div>
+            </div>
+            
+        </div>
+        <div class="col-md-5  bg-light card-check "> 
+            <div class="col-md-12 mx-auto">
+                <div class="col-md-12 my-3">
+                        <span class="h2">@Model.Name </span>
+                        <span class="float-right" style="color:#d64161;"> <strong>@Model.Price ₺ </strong></span>
+                </div>
+                <div class="col-md-12 my-3">          
+                         <p> @Html.Raw(Model.Description) </p>
+                </div>
+                <div class="col-md-12 my-3">   
+                    @for (var i=0; i<Model.Stars; i++)
+                    {
+                         <i class="fa fa-star" style="color:#d64161;"></i>
+                    }
+                    <small class="text-muted" id="stars_value">(@Model.Stars)</small>
+                    <small class="text-muted float-md-right" id="stars_value"><i class="fa-solid fa-users"></i> (@Model.UserVote)</small>
+                </div>
+                <hr class="text-muted"/>
+                <form asp-controller="Cart" asp-action="AddCart" style="display:inline" method="post" class="form-input">
+                        <input type="hidden" name="productId" value="@Model.Id" />
+                        <div  class="mt-3 mx-auto">
+                            <div class="input-group ">
+                                <span class="input-group-btn">
+                                    <button type="button" class="quantity-left-minus btn btn-danger border-0 rounded-0">
+                                        <i class="fas fa-minus" style="color:white"></i>
+                                    </button>
+                                </span>
+                                    @{
+                                        int _max = Model.StockQuantity < 10 ? Model.StockQuantity : 10;
+                            
+                                    }
+                                <input type="number" id="quantity" name="quantity" class=" bg-whiteform-control col-2  border-0 rounded-0 " 
+                                    value="1" 
+                                    min="1" 
+                                    max= @_max.ToString()/>
+                                <span class="input-group-btn">
+                                    <button type="button"  class="quantity-right-plus btn btn-success border-0 rounded-0 ">
+                                        <i class="fas fa-plus" style="color:white"></i>
+                                    </button>
+                                </span>
+                                <span class="text-warning quantity-warning">ürün adedi en fazla @_max.ToString() adet, en az 1 adet seçilmelidir. </span>
+                            </div>
+                        </div>
+                    <div class="input-group flex-nowrap col-md-12 my-3">
+                        <span class="input-group-text p-2 border-0 rounded-0 bg-white text-dark" ><strong>₺ @Model.Price</strong></span>
+                        @if(SignInManager.IsSignedIn(User))
+                        {
+                                @if (Model.StockQuantity > 0)
+                                {
+                                    <button class="btn border-0 rounded-0 col-md-10 m-0" type="submit" style="background-color:#d64161;color:white;"><strong>Add To Cart</strong></button>
+                                }
+                                else
+                                {
+                                    <p class="text-white bg-danger py-2 border-0 rounded-0 col-md-10 m-0">Satışta Değil</p>
+                                }
+                            }
+                        else
+                        {
+                            <button class="btn border-0 rounded-0 col-md-10 m-0 disabled" type="button" style="background-color:#d64161;color:white;"><strong>Add To Cart</strong></button>
+                        }
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
